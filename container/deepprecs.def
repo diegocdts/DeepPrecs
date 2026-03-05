@@ -1,0 +1,16 @@
+Bootstrap: docker
+From: python:3.10-slim
+
+%files
+    requirements.txt /opt/requirements.txt
+
+%post
+    python -m pip install --upgrade pip
+    pip install --no-cache-dir -r /opt/requirements.txt
+
+%environment
+    export PYTHONUNBUFFERED=1
+    export LC_ALL=C
+
+%runscript
+    exec python "$@"
