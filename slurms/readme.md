@@ -1,0 +1,1 @@
+Esse diretório contém os arquivos de log e erro
