@@ -1,15 +1,9 @@
 Bootstrap: docker
 From: python:3.11-slim
 
-%files
-    ../requirements.txt /tmp/requirements.txt
-
 %post
-    apt-get update && apt-get install -y python3-pip
-    pip install --no-cache-dir -r /tmp/requirements.txt
+    apt-get update
+    apt-get install -y python3-pip
 
 %environment
     export PYTHONUNBUFFERED=1
-
-%runscript
-    exec python "$@"
