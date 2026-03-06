@@ -59,6 +59,7 @@ pytorch-lightning==2.6.1
 pytorch-msssim==1.0.0
 PyYAML==6.0.3
 pyzmq==27.1.0
+segyio==1.9.14
 setuptools==82.0.0
 six==1.17.0
 stack-data==0.6.3
