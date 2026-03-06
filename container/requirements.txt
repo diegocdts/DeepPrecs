@@ -8,7 +8,6 @@ cuda-bindings==12.9.4
 cuda-pathfinder==1.4.0
 debugpy==1.8.20
 decorator==5.2.1
--e git+https://github.com/diegocdts/DeepPrecs@c84ec291d29c48cf5e75a6e7497b690eb348114a#egg=deepprecs
 executing==2.2.1
 filelock==3.25.0
 frozenlist==1.8.0
