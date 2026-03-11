@@ -4,7 +4,7 @@
 #SBATCH -A mddlgp
 #SBATCH -J DL
 #SBATCH --nodes=1
-#SBATCH --ntasks-per-node=4
+#SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=8
 #SBATCH --gres=gpu:4
 #SBATCH --time=100:00:00

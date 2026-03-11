@@ -39,7 +39,7 @@ from deepprecs.train_pl import *
 from deepprecs.invert import InvertAll
 
 
-def workflow_deblending(label, inputfile, train_model):
+def workflow_deblending(label, inputfile, ns, train_model):
     ################# GLOBAL ####################
     # Device
     devicenum = 0
@@ -137,8 +137,7 @@ def workflow_deblending(label, inputfile, train_model):
     s_unique, s_index = np.unique(sx, return_inverse=True)
     r_unique, r_index = np.unique(gx, return_inverse=True)
 
-    ns = len(s_unique)
-    nr = len(r_unique)
+    nr = len(r_unique) / ns
 
     ds = np.median(np.diff(s_unique))
     dr = np.median(np.diff(r_unique))
