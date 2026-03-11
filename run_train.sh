@@ -18,7 +18,7 @@ cd $SLURM_SUBMIT_DIR
 
 DIR_SRC=${SLURM_SUBMIT_DIR}
 DIR_DATA="/beegfs/gaia/tcs/ufrj_ml_u30s/dados-sinteticos/Dataset_blended/jitter_150ms"
-DIR_CONT="${DIR_SRC}/container"
+DIR_CONT="$/beegfs/g86s/container"
 
 LABEL="marmousi"
 TRAIN_MODEL="true"
