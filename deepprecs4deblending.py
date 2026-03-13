@@ -39,7 +39,7 @@ from deepprecs.train_pl import *
 from deepprecs.invert import InvertAll
 
 
-def write_sgy(output_path, spec, ns, nr, data_csg, src):
+def write_sgy(output_path, spec, ns, nr, data_csg, headers, src_bin, src_text):
     
     with segyio.create(output_path, spec) as dst:
 
@@ -51,11 +51,11 @@ def write_sgy(output_path, spec, ns, nr, data_csg, src):
                 dst.trace[trace_idx] = data_csg[s_i, r_i, :]
 
                 # copiar header do original se quiser
-                dst.header[trace_idx] = src.header[trace_idx]
+                dst.header[trace_idx] = headers[trace_idx]
 
                 trace_idx += 1
-        dst.bin = src.bin
-        dst.text[0] = src.text[0]
+        dst.bin = src_bin
+        dst.text[0] = src_text
 
 
 def workflow_deblending(label, inputfile, ns, train_model):
@@ -152,6 +152,8 @@ def workflow_deblending(label, inputfile, ns, train_model):
         spec.tracecount = src.tracecount
 
         headers = [src.header[i] for i in range(src.tracecount)]
+        src_bin = src.bin
+        src_text = src.text[0]
 
         ntraces = src.tracecount
         nt = len(src.samples)
@@ -364,7 +366,7 @@ def workflow_deblending(label, inputfile, ns, train_model):
         data_csg_mvin[:, i_rec, :] = minv
         data_csg_mvin_rf[:, i_rec, :] = minv_refined
 
-    write_sgy(f'{outputsgy}/mvin.sgy', spec, ns, nr, data_csg_mvin, src)
-    write_sgy(f'{outputsgy}/mvin_refined.sgy', spec, ns, nr, data_csg_mvin_rf, src)
+    write_sgy(f'{outputsgy}/mvin.sgy', spec, ns, nr, data_csg_mvin, headers, src_bin, src_text)
+    write_sgy(f'{outputsgy}/mvin_refined.sgy', spec, ns, nr, data_csg_mvin_rf, headers, src_bin, src_text)
     
     print("End of processing")
