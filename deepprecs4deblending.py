@@ -202,7 +202,7 @@ def workflow_deblending(label, inputfile, ns, train_model):
     pblend_torch = torch.from_numpy(pblend.astype(np.float32)).to(device)
 
     # Create blending operator for single receiver
-    B1op = BlendingContinuous(nt, 1, ns, dt, np.cumsum(ignition_times), dtype="complex128")
+    B1op = BlendingContinuous(nt, 1, ns, dt, ignition_times.astype("float32"), dtype=np.float32)
 
     ppseudo1 = B1op.H * pblend[np.newaxis].ravel()
     ppseudo1 = ppseudo1.reshape(ns, nt)
