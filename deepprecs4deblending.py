@@ -360,9 +360,6 @@ def workflow_deblending(label, inputfile, ns, train_model):
         minv_refined = cp.asnumpy(pylops.optimization.solver.lsqr(B1op, cp.asarray(pblend), 
                                                          cp.asarray(minv.ravel()), niter=10)[0]).reshape(ns, nt)
 
-        # mover para cpu
-        minv_np = minv.detach().cpu().numpy()
-
         # guardar no volume CSG
         data_csg_mvin[:, i_rec, :] = minv_np
         data_csg_mvin_rf[:, i_rec, :] = minv_refined
