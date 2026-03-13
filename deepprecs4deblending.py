@@ -361,7 +361,7 @@ def workflow_deblending(label, inputfile, ns, train_model):
                                                          cp.asarray(minv.ravel()), niter=10)[0]).reshape(ns, nt)
 
         # guardar no volume CSG
-        data_csg_mvin[:, i_rec, :] = minv_np
+        data_csg_mvin[:, i_rec, :] = minv
         data_csg_mvin_rf[:, i_rec, :] = minv_refined
 
     write_sgy(f'{outputsgy}/mvin.sgy', spec, ns, nr, data_csg_mvin, src)
