@@ -258,6 +258,8 @@ def workflow_deblending(label, inputfile, ns, train_model):
                         relu_dec=relu_dec, tanh_final=tanh_final,
                         patcher=Pop1_torch, npatches=npatches[0]*npatches[1],
                         patchesscaling=scalings)
+    
+    autoencoder = autoencoder.to(device)
 
     # Create dataset
     datamodule = DataModule(xs, valid_size=0.1, random_state=42, batch_size=batch_size)
