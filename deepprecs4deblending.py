@@ -39,6 +39,25 @@ from deepprecs.train_pl import *
 from deepprecs.invert import InvertAll
 
 
+def write_sgy(output_path, spec, ns, nr, data_csg, src):
+    
+    with segyio.create(output_path, spec) as dst:
+
+        trace_idx = 0
+
+        for s_i in range(ns):
+            for r_i in range(nr):
+
+                dst.trace[trace_idx] = data_csg[s_i, r_i, :]
+
+                # copiar header do original se quiser
+                dst.header[trace_idx] = src.header[trace_idx]
+
+                trace_idx += 1
+        dst.bin = src.bin
+        dst.text[0] = src.text[0]
+
+
 def workflow_deblending(label, inputfile, ns, train_model):
     ################# GLOBAL ####################
     # Device
@@ -54,9 +73,11 @@ def workflow_deblending(label, inputfile, ns, train_model):
     # Model and figure directories
     outputmodels = f'results/{label}/models'
     outputfigs = f'results/{label}/figures'
+    outputsgy = f'results/{label}/sgy'
 
     os.makedirs(outputmodels, exist_ok=True)
     os.makedirs(outputfigs, exist_ok=True)
+    os.makedirs(outputsgy, exist_ok=True)
 
     ################# TRAINING ####################
 
@@ -120,21 +141,31 @@ def workflow_deblending(label, inputfile, ns, train_model):
 
     ################# LOAD DATA ####################
 
-    with segyio.open(inputfile, "r", ignore_geometry=True) as f:
+    with segyio.open(inputfile, "r", ignore_geometry=True) as src:
 
-        ntraces = f.tracecount
-        nt = len(f.samples)
+        spec = segyio.spec()
+        spec.sorting = src.sorting
+        spec.format = src.format
+        spec.samples = src.samples
+        spec.ilines = src.ilines
+        spec.xlines = src.xlines
+        spec.tracecount = src.tracecount
+
+        headers = [src.header[i] for i in range(src.tracecount)]
+
+        ntraces = src.tracecount
+        nt = len(src.samples)
 
         # tempo
         dt = segyio.tools.dt(f) / 1e6
         t = np.arange(nt) * dt
 
         # dados
-        data = segyio.tools.collect(f.trace[:])   # (ntraces, nt)
+        data = segyio.tools.collect(src.trace[:])   # (ntraces, nt)
 
         # headers
-        sx = f.attributes(segyio.TraceField.FieldRecord)[:]
-        gx = f.attributes(segyio.TraceField.TraceNumber)[:]
+        sx = src.attributes(segyio.TraceField.FieldRecord)[:]
+        gx = src.attributes(segyio.TraceField.TraceNumber)[:]
 
     s_unique, s_index = np.unique(sx, return_inverse=True)
     r_unique, r_index = np.unique(gx, return_inverse=True)
@@ -309,8 +340,13 @@ def workflow_deblending(label, inputfile, ns, train_model):
                     nn.MSELoss(), 1., 100, # optimizer
                     reg_ae=0., x0=p0, bounds=None
                     )
+
+    data_csg_mvin = np.zeros((ns, nr, nt), dtype=np.float32)
+    data_csg_mvin_rf = np.zeros((ns, nr, nt), dtype=np.float32)
+
     
     for i_rec in range(nr):
+        print(f'Invertion of {i_rec} out of {nr}')
         # Create data to deblend (single receiver-gather)
         pblend = pblended[i_rec] 
 
@@ -319,16 +355,19 @@ def workflow_deblending(label, inputfile, ns, train_model):
 
         minv, pinv = inv.scipy_invert(pblend_torch, torch.zeros(((ns, nt))).to(device))
 
-        # Recompute data from minv
-        if 'cuda' in str(device):
-            dinv = cp.asnumpy(B1op * cp.asarray(minv))
-        else:
-            dinv = Dupop * minv
-
         minv = minv.reshape(ns, nt)
-        dinv = dinv.reshape(Bop.nttot)
 
         minv_refined = cp.asnumpy(pylops.optimization.solver.lsqr(B1op, cp.asarray(pblend), 
                                                          cp.asarray(minv.ravel()), niter=10)[0]).reshape(ns, nt)
+
+        # mover para cpu
+        minv_np = minv.detach().cpu().numpy()
+
+        # guardar no volume CSG
+        data_csg_mvin[:, i_rec, :] = minv_np
+        data_csg_mvin_rf[:, i_rec, :] = minv_refined
+
+    write_sgy(f'{outputsgy}/mvin.sgy', spec, ns, nr, data_csg_mvin, src)
+    write_sgy(f'{outputsgy}/mvin_refined.sgy', spec, ns, nr, data_csg_mvin_rf, src)
     
     print("End of processing")
