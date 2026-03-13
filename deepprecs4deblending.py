@@ -64,6 +64,8 @@ def workflow_deblending(label, inputfile, ns, train_model):
     nspatch, ntpatch = 64, 64
     nsjump, ntjump = 32, 32
 
+    clip = 0.01
+
     # Experiment number and name
     iexp = 0
     expname = 'ResNet network with more filters 300enc - mse+ccc cost with learned weigths + mask'
