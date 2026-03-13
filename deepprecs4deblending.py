@@ -152,9 +152,7 @@ def workflow_deblending(label, inputfile, ns, train_model):
     s = s_unique.reshape(1, ns)
     r = r_unique.reshape(1, nr)
 
-    p = np.zeros((ns, nr, nt))
-
-    p[np.ix_(s_index, r_index, np.arange(nt))] = data
+    p = data.reshape(ns, nr, nt)
 
     p /= np.max(np.abs(p))
 
