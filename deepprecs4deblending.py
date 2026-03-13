@@ -104,7 +104,7 @@ def workflow_deblending(label, inputfile, ns, train_model):
     es_min_delta = 1e-3 # min difference to trigger early stopping
 
     # Training
-    num_epochs = 1 # number of epochs
+    num_epochs = 100 # number of epochs
     batch_size = 256 # batch size
     noise_std = 0.0 # standard deviation noise to input
     mask_perc = 0.2 # percentage of traces to mask
