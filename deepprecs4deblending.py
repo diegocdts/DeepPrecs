@@ -154,7 +154,7 @@ def workflow_deblending(label, inputfile, ns, train_model):
 
     p = np.zeros((ns, nr, nt))
 
-    p[s_index, r_index, :] = data
+    p[np.ix_(s_index, r_index, np.arange(nt))] = data
 
     p /= np.max(np.abs(p))
 
