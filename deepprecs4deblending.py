@@ -157,7 +157,7 @@ def workflow_deblending(label, inputfile, ns, train_model):
         nt = len(src.samples)
 
         # tempo
-        dt = segyio.tools.dt(f) / 1e6
+        dt = segyio.tools.dt(src) / 1e6
         t = np.arange(nt) * dt
 
         # dados
