@@ -259,8 +259,6 @@ def workflow_deblending(label, inputfile, ns, train_model):
                         patcher=Pop1_torch, npatches=npatches[0]*npatches[1],
                         patchesscaling=scalings)
     
-    autoencoder = autoencoder.to(device)
-
     # Create dataset
     datamodule = DataModule(xs, valid_size=0.1, random_state=42, batch_size=batch_size)
 
@@ -291,7 +289,8 @@ def workflow_deblending(label, inputfile, ns, train_model):
     else:
         model_path = os.path.join(outputmodels, f'exp{iexp}_modelweights.pt')
         autoencoder.load_state_dict(torch.load(model_path, map_location=device))
-        autoencoder.eval()
+    autoencoder.to(device)
+    autoencoder.eval()
 
     ################# DEBLENDING ####################
 
