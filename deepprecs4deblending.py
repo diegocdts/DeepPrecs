@@ -137,7 +137,14 @@ def workflow_deblending(label, inputfile, ns, train_model):
     s_unique, s_index = np.unique(sx, return_inverse=True)
     r_unique, r_index = np.unique(gx, return_inverse=True)
 
-    nr = len(r_unique) / ns
+    if len(s_unique) == 1:
+        nr = int(len(r_unique) / ns)
+
+        sx = np.arange(ns)
+        gx = np.arange(nr)
+
+        s_unique, s_index = np.unique(sx, return_inverse=True)
+        r_unique, r_index = np.unique(gx, return_inverse=True)
 
     ds = np.median(np.diff(s_unique))
     dr = np.median(np.diff(r_unique))
