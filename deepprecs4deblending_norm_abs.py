@@ -1,4 +1,3 @@
-
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -37,7 +36,6 @@ from deepprecs.subsampling import subsampling
 from deepprecs.aemodel import AutoencoderBase, AutoencoderRes, AutoencoderMultiRes
 from deepprecs.train_pl import *
 from deepprecs.invert import InvertAll
-
 
 def write_sgy(output_path, spec, ns, nr, data_csg, headers, src_bin, src_text):
     
@@ -83,7 +81,7 @@ def workflow_deblending(label, inputfile, ns, train_model):
 
     # Patches
     nspatch, ntpatch = 64, 64
-    nsjump, ntjump = 32, 32
+    nsjump, ntjump = 16, 19
 
     clip = 0.01
 
@@ -126,7 +124,7 @@ def workflow_deblending(label, inputfile, ns, train_model):
 
     # Training
     num_epochs = 100 # number of epochs
-    batch_size = 256 # batch size
+    batch_size = 64 # batch size
     noise_std = 0.0 # standard deviation noise to input
     mask_perc = 0.2 # percentage of traces to mask
 
