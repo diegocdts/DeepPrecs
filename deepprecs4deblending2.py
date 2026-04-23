@@ -1,4 +1,3 @@
-
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -37,7 +36,6 @@ from deepprecs.subsampling import subsampling
 from deepprecs.aemodel import AutoencoderBase, AutoencoderRes, AutoencoderMultiRes
 from deepprecs.train_pl import *
 from deepprecs.invert import InvertAll
-
 
 def write_sgy(output_path, spec, ns, nr, data_csg, headers, src_bin, src_text):
     
@@ -83,7 +81,7 @@ def workflow_deblending(label, inputfile, ns, train_model):
 
     # Patches
     nspatch, ntpatch = 64, 64
-    nsjump, ntjump = 32, 32
+    nsjump, ntjump = 16, 19
 
     clip = 0.01
 
@@ -126,7 +124,7 @@ def workflow_deblending(label, inputfile, ns, train_model):
 
     # Training
     num_epochs = 100 # number of epochs
-    batch_size = 256 # batch size
+    batch_size = 64 # batch size
     noise_std = 0.0 # standard deviation noise to input
     mask_perc = 0.2 # percentage of traces to mask
 
@@ -189,7 +187,11 @@ def workflow_deblending(label, inputfile, ns, train_model):
 
     p = data.reshape(ns, nr, nt)
 
-    p /= np.max(np.abs(p))
+    p_mean = np.mean(p)
+    p_std = np.std(p, ddof=1)
+    n_std = 3
+
+    p = (p - p_mean) / (p_std * n_std)
 
     print("===== Informações do dado sísmico =====")
 
@@ -224,17 +226,17 @@ def workflow_deblending(label, inputfile, ns, train_model):
     # Blending
     Bop = BlendingContinuous(nt, nr, ns, dt, ignition_times.astype("float32"), dtype=np.float32)
     dottest(Bop, verb=True, tol=1e-2)
-    pblended = p.ravel()
-    
+    pblended = Bop * p.ravel()
+    ppseudo = Bop.H * pblended
 
     pblended = pblended.reshape(Bop.nr, Bop.nttot)
-    
+    ppseudo = ppseudo.reshape(Bop.ns, Bop.nr, Bop.nt)
 
     # Create data to deblend (single receiver-gather)
     pblend = pblended[irec] 
 
-    
-    
+    # Convert data to torch
+    pblend_torch = torch.from_numpy(pblend.astype(np.float32)).to(device)
 
     # Create blending operator for single receiver
     B1op = BlendingContinuous(nt, 1, ns, dt, ignition_times.astype("float32"), dtype=np.float32)

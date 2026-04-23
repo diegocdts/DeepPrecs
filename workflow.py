@@ -12,18 +12,18 @@ if __name__ == '__main__':
     label = args.label
     train_model = True if args.train_model is None or args.train_model.lower() == 'true' else False
 
-    if label == '5D' or label == '5_D':
+    if '5D' in label:
         label = '5D'
         inputfile = '/home/data/5D/Streamer/05_D_clean.sgy'
         ns = 256
-    elif label == '6A' or label == '6_A':
+    elif '6A' in label:
         label = '6A'
         inputfile = '/home/data/6A/Streamer/06_A_clean.sgy'
         ns = 1666
-    elif label == 'marmousi':
+    elif 'marmousi' in label:
         inputfile = '/home/data/Marmousi/Streamer/Marmousi_clean.sgy'
-        ns = 120
-    elif label == 'seam':
+        ns = 1001
+    elif 'seam' in label:
         inputfile = '/home/data/Seam/Streamer/Seam_clean.sgy'
         ns = 1200
     else:
