@@ -1,6 +1,6 @@
 import argparse
 
-from deepprecs4deblending2 import workflow_deblending
+from deepprecs4deblending_norm_abs import workflow_deblending
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

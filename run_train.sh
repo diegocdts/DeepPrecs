@@ -20,8 +20,8 @@ DIR_SRC=${SLURM_SUBMIT_DIR}
 DIR_DATA="/beegfs/gaia/tcs/ufrj_ml_u30s/dados/Deblending"
 DIR_CONT="/beegfs/g86s/container"
 
-LABEL="marmousi_zscore_norm"
-TRAIN_MODEL="false"
+LABEL="marmousi_norm_abs"
+TRAIN_MODEL="true"
 
 echo "Running training..."
 
