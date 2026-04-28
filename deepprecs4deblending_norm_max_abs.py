@@ -56,7 +56,7 @@ def write_sgy(output_path, spec, ns, nr, data_csg, headers, src_bin, src_text):
         dst.text[0] = src_text
 
 
-def workflow_deblending(label, inputfile, ns, nr, nt, dt, train_model):
+def workflow_deblending(label, inputfile, ignition_times, ns, nr, nt, dt, train_model):
     ################# GLOBAL ####################
     # Device
     devicenum = 0
@@ -171,12 +171,6 @@ def workflow_deblending(label, inputfile, ns, nr, nt, dt, train_model):
     print(f"r min/max: {r.min()}  {r.max()}")
 
     ################# DEBLENDING OPERATOR ####################
-
-    # Blending operator
-    overlap = 0.33
-    jitter = np.random.uniform(-.15, .15, ns)
-    ignition_times = np.arange(0, overlap * nt * ns, overlap * nt) * dt + jitter
-    ignition_times[0] = 0.0
 
     # Blending
     Bop = BlendingContinuous(nt, nr, ns, dt, ignition_times.astype("float32"), dtype=np.float32)

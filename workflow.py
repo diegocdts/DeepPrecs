@@ -22,6 +22,7 @@ if __name__ == '__main__':
         ns = 1666
     elif 'marmousi' in label:
         inputfile = '/home/data/marmousi_blend.npy'
+        ignition_times = '/home/data/marmousi_times.npy'
         ns = 1001
         nr = 120
         nt = 1500
@@ -32,4 +33,4 @@ if __name__ == '__main__':
     else:
         raise ValueError("Dataset not found!")
 
-    workflow_deblending(label, inputfile, ns, nr, nt, dt, train_model)
+    workflow_deblending(label, inputfile, ignition_times, ns, nr, nt, dt, train_model)
