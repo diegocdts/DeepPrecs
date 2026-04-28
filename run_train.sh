@@ -17,10 +17,10 @@ nodeset -e $SLURM_JOB_NODELIST
 cd $SLURM_SUBMIT_DIR
 
 DIR_SRC=${SLURM_SUBMIT_DIR}
-DIR_DATA="/beegfs/gaia/tcs/ufrj_ml_u30s/dados/Deblending"
+DIR_DATA="/beegfs/g86s/data"
 DIR_CONT="/beegfs/g86s/container"
 
-LABEL="marmousi_norm_abs"
+LABEL="marmousi"
 TRAIN_MODEL="true"
 
 echo "Running training..."

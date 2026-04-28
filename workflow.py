@@ -1,6 +1,6 @@
 import argparse
 
-from deepprecs4deblending_norm_abs import workflow_deblending
+from deepprecs4deblending_norm_max_abs import workflow_deblending
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -14,17 +14,19 @@ if __name__ == '__main__':
 
     if '5D' in label:
         label = '5D'
-        inputfile = '/home/data/5D/Streamer/05_D_clean.sgy'
+        inputfile = '/home/data/05_D_blend.npy'
         ns = 256
     elif '6A' in label:
         label = '6A'
-        inputfile = '/home/data/6A/Streamer/06_A_clean.sgy'
+        inputfile = '/home/data/06_A_.npy'
         ns = 1666
     elif 'marmousi' in label:
-        inputfile = '/home/data/Marmousi/Streamer/Marmousi_clean.sgy'
+        inputfile = '/home/data/marmousi_blend.npy'
         ns = 1001
+        nr = 120
+        nt = 1500
     elif 'seam' in label:
-        inputfile = '/home/data/Seam/Streamer/Seam_clean.sgy'
+        inputfile = '/home/data/seam_blend.npy'
         ns = 1200
     else:
         raise ValueError("Dataset not found!")

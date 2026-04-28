@@ -56,7 +56,7 @@ def write_sgy(output_path, spec, ns, nr, data_csg, headers, src_bin, src_text):
         dst.text[0] = src_text
 
 
-def workflow_deblending(label, inputfile, ns, train_model):
+def workflow_deblending(label, inputfile, ns, nr, nt, dt, train_model):
     ################# GLOBAL ####################
     # Device
     devicenum = 0
@@ -139,59 +139,17 @@ def workflow_deblending(label, inputfile, ns, train_model):
 
     ################# LOAD DATA ####################
 
-    with segyio.open(inputfile, "r", ignore_geometry=True) as src:
-
-        spec = segyio.spec()
-        spec.sorting = src.sorting
-        spec.format = src.format
-        spec.samples = src.samples
-        spec.ilines = src.ilines
-        spec.xlines = src.xlines
-        spec.tracecount = src.tracecount
-
-        headers = [src.header[i] for i in range(src.tracecount)]
-        src_bin = src.bin
-        src_text = src.text[0]
-
-        ntraces = src.tracecount
-        nt = len(src.samples)
-
-        # tempo
-        dt = segyio.tools.dt(src) / 1e6
-        t = np.arange(nt) * dt
-
-        # dados
-        data = segyio.tools.collect(src.trace[:])   # (ntraces, nt)
-
-        # headers
-        sx = src.attributes(segyio.TraceField.FieldRecord)[:]
-        gx = src.attributes(segyio.TraceField.TraceNumber)[:]
+    sx = np.arange(ns)
+    gx = np.arange(nr)
 
     s_unique, s_index = np.unique(sx, return_inverse=True)
     r_unique, r_index = np.unique(gx, return_inverse=True)
-
-    if len(s_unique) == 1:
-        nr = int(len(r_unique) / ns)
-
-        sx = np.arange(ns)
-        gx = np.arange(nr)
-
-        s_unique, s_index = np.unique(sx, return_inverse=True)
-        r_unique, r_index = np.unique(gx, return_inverse=True)
 
     ds = np.median(np.diff(s_unique))
     dr = np.median(np.diff(r_unique))
 
     s = s_unique.reshape(1, ns)
     r = r_unique.reshape(1, nr)
-
-    p = data.reshape(ns, nr, nt)
-
-    p_mean = np.mean(p)
-    p_std = np.std(p, ddof=1)
-    n_std = 3
-
-    p = (p - p_mean) / (p_std * n_std)
 
     print("===== Informações do dado sísmico =====")
 
@@ -226,7 +184,8 @@ def workflow_deblending(label, inputfile, ns, train_model):
     # Blending
     Bop = BlendingContinuous(nt, nr, ns, dt, ignition_times.astype("float32"), dtype=np.float32)
     dottest(Bop, verb=True, tol=1e-2)
-    pblended = Bop * p.ravel()
+    pblended = np.load(inputfile)
+    pblended /= np.max(np.abs(pblended))
     ppseudo = Bop.H * pblended
 
     pblended = pblended.reshape(Bop.nr, Bop.nttot)
