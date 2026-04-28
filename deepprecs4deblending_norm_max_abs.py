@@ -165,7 +165,6 @@ def workflow_deblending(label, inputfile, ns, nr, nt, dt, train_model):
     print("\nShapes das variáveis:")
     print(f"s shape: {s.shape}")
     print(f"r shape: {r.shape}")
-    print(f"p shape: {p.shape}")
 
     print("\nIntervalos:")
     print(f"s min/max: {s.min()}  {s.max()}")
