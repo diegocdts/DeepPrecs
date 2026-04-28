@@ -25,10 +25,11 @@ if __name__ == '__main__':
         ns = 1001
         nr = 120
         nt = 1500
+        dt = 0.004
     elif 'seam' in label:
         inputfile = '/home/data/seam_blend.npy'
         ns = 1200
     else:
         raise ValueError("Dataset not found!")
 
-    workflow_deblending(label, inputfile, ns, train_model)
+    workflow_deblending(label, inputfile, ns, nr, nt, dt, train_model)
