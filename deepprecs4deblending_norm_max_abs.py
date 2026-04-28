@@ -56,7 +56,7 @@ def write_sgy(output_path, spec, ns, nr, data_csg, headers, src_bin, src_text):
         dst.text[0] = src_text
 
 
-def workflow_deblending(label, inputfile, ignition_times, ns, nr, nt, dt, train_model):
+def workflow_deblending(label, inputfile, ignition_times_file, ns, nr, nt, dt, train_model):
     ################# GLOBAL ####################
     # Device
     devicenum = 0
@@ -173,6 +173,7 @@ def workflow_deblending(label, inputfile, ignition_times, ns, nr, nt, dt, train_
     ################# DEBLENDING OPERATOR ####################
 
     # Blending
+    ignition_times_file = np.load(ignition_times_file)
     Bop = BlendingContinuous(nt, nr, ns, dt, ignition_times.astype("float32"), dtype=np.float32)
     dottest(Bop, verb=True, tol=1e-2)
     pblended = np.load(inputfile)
