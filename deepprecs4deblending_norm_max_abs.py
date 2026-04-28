@@ -173,7 +173,7 @@ def workflow_deblending(label, inputfile, ignition_times_file, ns, nr, nt, dt, t
     ################# DEBLENDING OPERATOR ####################
 
     # Blending
-    ignition_times_file = np.load(ignition_times_file)
+    ignition_times = np.load(ignition_times_file)
     Bop = BlendingContinuous(nt, nr, ns, dt, ignition_times.astype("float32"), dtype=np.float32)
     dottest(Bop, verb=True, tol=1e-2)
     pblended = np.load(inputfile)
