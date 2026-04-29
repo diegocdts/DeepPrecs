@@ -56,7 +56,7 @@ def write_sgy(output_path, spec, ns, nr, data_csg, headers, src_bin, src_text):
         dst.text[0] = src_text
 
 
-def workflow_deblending(label, inputfile, ignition_times_file, ns, nr, nt, dt, train_model):
+def workflow_deblending(label, inputfile, pseudofile, ignition_times_file, ns, nr, nt, dt, train_model):
     ################# GLOBAL ####################
     # Device
     devicenum = 0
@@ -138,6 +138,20 @@ def workflow_deblending(label, inputfile, ignition_times_file, ns, nr, nt, dt, t
     nover = (19, 8)
 
     ################# LOAD DATA ####################
+
+    with segyio.open(pseudofile, "r", ignore_geometry=True) as src:
+
+        spec = segyio.spec()
+        spec.sorting = src.sorting
+        spec.format = src.format
+        spec.samples = src.samples
+        spec.ilines = src.ilines
+        spec.xlines = src.xlines
+        spec.tracecount = src.tracecount
+
+        headers = [src.header[i] for i in range(src.tracecount)]
+        src_bin = src.bin
+        src_text = src.text[0]
 
     sx = np.arange(ns)
     gx = np.arange(nr)
