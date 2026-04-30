@@ -30,7 +30,12 @@ if __name__ == '__main__':
         dt = 0.004
     elif 'seam' in label:
         inputfile = '/home/data/seam_blend.npy'
+        pseudofile = '/home/data/seam_pseudo_j_150ms.sgy'
+        ignition_times_file = '/home/data/seam_times.npy'
         ns = 1200
+        nr = 776
+        nt = 4002
+        dt = 0.002
     else:
         raise ValueError("Dataset not found!")
 
